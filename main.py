@@ -1,5 +1,6 @@
 from cassandra.cluster import Cluster
 from pyspark.sql import SparkSession
+import os
 
 
 def main():
@@ -29,7 +30,7 @@ def aggregateByMonth(spark):
 
 def uploadRawData(spark):
     df = spark.read \
-        .csv('file:///home/david/PycharmProjects/etl/storage/financeData.csv', header=True)
+        .csv('file://' + os.getcwd() + '/storage/data.csv', header=True)
     csvData = df.rdd.map(mapToSchema).toDF(sampleRatio=0.01)
     csvData \
         .write \
@@ -47,6 +48,8 @@ def bootstrapSparkSession():
         .config('spark.sql.extensions', "com.datastax.spark.connector.CassandraSparkExtensions") \
         .config('spark.cassandra.connection.host', "0.0.0.0") \
         .config("spark.sql.catalog.etl", "com.datastax.spark.connector.datasource.CassandraCatalog") \
+        .config("spark.cassandra.input.consistency.level", "LOCAL_QUORUM") \
+        .config("spark.cassandra.output.consistency.level", "LOCAL_QUORUM") \
         .appName("Finance report") \
         .getOrCreate()
 
