@@ -67,6 +67,7 @@ def bootstrapCassandraConnection():
     session.execute("use finance")
     session.execute(open('./migrations/v1.cql').read())
     session.execute(open('./migrations/v2.cql').read())
+    session.execute(open('./migrations/v3.cql').read())
     return session
 
 
