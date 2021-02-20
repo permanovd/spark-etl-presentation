@@ -1,0 +1,2 @@
+pyspark
+cassandra-driver
